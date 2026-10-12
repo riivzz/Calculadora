@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Calculadora.MainPage"
+             BackgroundColor="#F3F3F3"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <!-- Estilo base ajustado (Width/Height a 72 y FontSize a 28) -->
+        <Style x:Key="EstiloBaseBoton" TargetType="Button">
+            <Setter Property="CornerRadius" Value="36" />
+            <Setter Property="HeightRequest" Value="72" />
+            <Setter Property="WidthRequest" Value="72" />
+            <Setter Property="FontSize" Value="28" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal">
+                            <VisualState.Setters>
+                                <Setter Property="Opacity" Value="1" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="Pressed">
+                            <VisualState.Setters>
+                                <Setter Property="Opacity" Value="0.5" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+
+        <!-- Estilo para números -->
+        <Style x:Key="BotonNumero" TargetType="Button" BasedOn="{StaticResource EstiloBaseBoton}">
+            <Setter Property="BackgroundColor" Value="#FFFFFF" />
+            <Setter Property="TextColor" Value="#333333" />
+        </Style>
+
+        <!-- Estilo para operadores -->
+        <Style x:Key="BotonOperador" TargetType="Button" BasedOn="{StaticResource EstiloBaseBoton}">
+            <Setter Property="BackgroundColor" Value="#FF9F0A" />
+            <Setter Property="TextColor" Value="White" />
+        </Style>
+
+        <!-- Estilo para memoria y limpiar (FontSize a 22) -->
+        <Style x:Key="BotonAccion" TargetType="Button" BasedOn="{StaticResource EstiloBaseBoton}">
+            <Setter Property="BackgroundColor" Value="#D4D4D2" />
+            <Setter Property="TextColor" Value="#1C1C1E" />
+            <Setter Property="FontSize" Value="22" />
+        </Style>
+    </ContentPage.Resources>
+
+    <!-- Contenedor ajustado a 360px de ancho y espaciado de 12 -->
+    <Grid MaximumWidthRequest="360"
+          HorizontalOptions="Center"
+          VerticalOptions="Center"
+          RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto" 
+          ColumnDefinitions="*, *, *, *" 
+          Padding="15" 
+          RowSpacing="12" 
+          ColumnSpacing="12">
+
+        <!-- Fila 0: Panel del Resultado -->
+        <Border Grid.Row="0" Grid.ColumnSpan="4"
+                BackgroundColor="#FFFFFF"
+                StrokeShape="RoundRectangle 20"
+                StrokeThickness="0"
+                Padding="16,12"
+                Margin="0,0,0,5">
+
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,4" Radius="8" Opacity="0.08" />
+            </Border.Shadow>
+
+            <VerticalStackLayout>
+                <!-- Etiqueta de Memoria -->
+                <Label x:Name="MemoriaLabel" 
+                       Text="" 
+                       TextColor="#FF9F0A" 
+                       FontSize="14" 
+                       FontFamily="AppleFont"
+                       FontAttributes="Bold"
+                       HorizontalOptions="Start" />
+
+                <!-- Etiqueta del Resultado Grande (reducido a 55) -->
+                <Label x:Name="PantallaLabel" 
+                       Text="0" 
+                       TextColor="#1C1C1E" 
+                       FontSize="55" 
+                       FontFamily="AppleFont"
+                       MinimumWidthRequest="100"
+                       LineBreakMode="TailTruncation"
+                       HorizontalOptions="End" />
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- Fila 1: Botones de Memoria -->
+        <Button Text="MC" Style="{StaticResource BotonAccion}" Grid.Row="1" Grid.Column="0" Clicked="OnMemoriaClicked" />
+        <Button Text="M+" Style="{StaticResource BotonAccion}" Grid.Row="1" Grid.Column="1" Clicked="OnMemoriaClicked" />
+        <Button Text="M-" Style="{StaticResource BotonAccion}" Grid.Row="1" Grid.Column="2" Clicked="OnMemoriaClicked" />
+        <Button Text="M" Style="{StaticResource BotonAccion}" Grid.Row="1" Grid.Column="3" Clicked="OnMemoriaClicked" />
+
+        <!-- Fila 2: Clear, Historial y Dividir -->
+        <Button Text="C" Style="{StaticResource BotonAccion}" Grid.Row="2" Grid.Column="0" Clicked="OnClearClicked" BackgroundColor="#FF453A" TextColor="White" />
+
+        <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
+                BackgroundColor="#E5E5EA"
+                StrokeShape="RoundRectangle 18"
+                StrokeThickness="0"
+                HeightRequest="72"
+                Padding="6,3">
+            <Grid ColumnDefinitions="*, Auto">
+                <ScrollView x:Name="HistorialScroll" Grid.Column="0" VerticalOptions="Center" HeightRequest="62">
+                    <VerticalStackLayout x:Name="HistorialContainer" Spacing="2" HorizontalOptions="Center" />
+                </ScrollView>
+
+                <Button Grid.Column="1"
+                        Text="🗑"
+                        FontSize="12"
+                        WidthRequest="28"
+                        HeightRequest="28"
+                        CornerRadius="14"
+                        Padding="0"
+                        Margin="2,0,0,0"
+                        BackgroundColor="#D1D1D6"
+                        TextColor="#3A3A3C"
+                        VerticalOptions="Center"
+                        Clicked="OnBorrarHistorialClicked" />
+            </Grid>
+        </Border>
+
+        <Button Text="/" Style="{StaticResource BotonOperador}" Grid.Row="2" Grid.Column="3" Clicked="OnOperadorClicked" />
+
+        <!-- Fila 3 -->
+        <Button Text="7" Style="{StaticResource BotonNumero}" Grid.Row="3" Grid.Column="0" Clicked="OnNumeroClicked" />
+        <Button Text="8" Style="{StaticResource BotonNumero}" Grid.Row="3" Grid.Column="1" Clicked="OnNumeroClicked" />
+        <Button Text="9" Style="{StaticResource BotonNumero}" Grid.Row="3" Grid.Column="2" Clicked="OnNumeroClicked" />
+        <Button Text="*" Style="{StaticResource BotonOperador}" Grid.Row="3" Grid.Column="3" Clicked="OnOperadorClicked" />
+
+        <!-- Fila 4 -->
+        <Button Text="4" Style="{StaticResource BotonNumero}" Grid.Row="4" Grid.Column="0" Clicked="OnNumeroClicked" />
+        <Button Text="5" Style="{StaticResource BotonNumero}" Grid.Row="4" Grid.Column="1" Clicked="OnNumeroClicked" />
+        <Button Text="6" Style="{StaticResource BotonNumero}" Grid.Row="4" Grid.Column="2" Clicked="OnNumeroClicked" />
+        <Button Text="-" Style="{StaticResource BotonOperador}" Grid.Row="4" Grid.Column="3" Clicked="OnOperadorClicked" />
+
+        <!-- Fila 5 -->
+        <Button Text="1" Style="{StaticResource BotonNumero}" Grid.Row="5" Grid.Column="0" Clicked="OnNumeroClicked" />
+        <Button Text="2" Style="{StaticResource BotonNumero}" Grid.Row="5" Grid.Column="1" Clicked="OnNumeroClicked" />
+        <Button Text="3" Style="{StaticResource BotonNumero}" Grid.Row="5" Grid.Column="2" Clicked="OnNumeroClicked" />
+        <Button Text="+" Style="{StaticResource BotonOperador}" Grid.Row="5" Grid.Column="3" Clicked="OnOperadorClicked" />
+
+        <!-- Fila 6 -->
+        <Button Text="0" Style="{StaticResource BotonNumero}" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" WidthRequest="156" HorizontalOptions="Fill" Clicked="OnNumeroClicked" />
+        <Button Text="," Style="{StaticResource BotonNumero}" Grid.Row="6" Grid.Column="2" Clicked="OnNumeroClicked" />
+        <Button Text="=" Style="{StaticResource BotonOperador}" Grid.Row="6" Grid.Column="3" Clicked="OnIgualClicked" />
+
+    </Grid>
+</ContentPage>
